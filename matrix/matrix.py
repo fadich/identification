@@ -5,14 +5,14 @@ import abc
 
 class Matrix(object):
     def __init__(self, array=None):
-        if array == None:
-            array = [[]]
-        
         if isinstance(array, np.ndarray):
             self._matrix = array
-        else:
-            self._validate(array)
-            self._matrix = np.array(array)
+            return
+
+        if array == None:
+            array = [[]]
+        self._validate(array)
+        self._matrix = np.array(array)
 
     def __call__(self, *args, **kwargs):
         return self._matrix
@@ -26,7 +26,7 @@ class Matrix(object):
 
         return Matrix(list(self._matrix.transpose().tolist()))
 
-    def mol(self, matrix):
+    def mul(self, matrix):
         if not isinstance(matrix, Matrix):
             raise ValueError('Argument should be instance of Matrix, %s given' % type(metrix))
 
@@ -117,6 +117,45 @@ if __name__ == '__main__':
         def test_two_dimensional_matrix_transpose(self):
             m = Matrix(self._2d)
             self.assertEqual(m.get_transposed().to_list(), self._2dt)
+
+
+    class TestMatrixMultiplication(TestMatrix):
+        def test_empty_matrix_multiplication(self):
+            a = Matrix()
+            b = Matrix()
+            self.assertEqual(a.mul(b).to_list(), [[]])
+
+        def test_vector_matrix_multiplication(self):
+            a = Matrix(self._1d)
+            b = Matrix(self._1dt)
+            self.assertEqual(
+            a.mul(b).to_list(),
+            [[1, 2, 3],
+             [2, 4, 6],
+             [3, 6, 9]]
+            )
+
+        def test_two_dimensional_matrix_multiplication_a_mul_a(self):
+            a = Matrix(self._2d)
+            self.assertEqual(
+            a.mul(a).to_list(),
+            [[ 1,  4,  9],
+             [16, 25, 36]]
+            )
+
+        def test_two_dimensional_matrix_multiplication_at_mul_at(self):
+            a = Matrix(self._2dt)
+            self.assertEqual(
+            a.mul(a).to_list(),
+            [[ 1, 16],
+             [ 4, 25],
+             [ 9, 36]]
+            )
+
+        def test_two_dimensional_matrix_multiplication_a_mul_at(self):
+            a = Matrix(self._2d)
+            b = Matrix(self._2dt)
+            self.assertRaises(ValueError, a.mul, b)
 
     """
     Run tests...
