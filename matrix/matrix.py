@@ -7,9 +7,12 @@ class Matrix(object):
     def __init__(self, array=None):
         if array == None:
             array = [[]]
-
-        self._validate(array)
-        self._matrix = np.array(array)
+        
+        if isinstance(array, np.ndarray):
+            self._matrix = array
+        else:
+            self._validate(array)
+            self._matrix = np.array(array)
 
     def __call__(self, *args, **kwargs):
         return self._matrix
@@ -22,6 +25,14 @@ class Matrix(object):
             return Matrix()
 
         return Matrix(list(self._matrix.transpose().tolist()))
+
+    def mol(self, matrix):
+        if not isinstance(matrix, Matrix):
+            raise ValueError('Argument should be instance of Matrix, %s given' % type(metrix))
+
+        c = self() * matrix()
+        return Matrix(c)
+        
 
     def _validate(self, array):
         try:
