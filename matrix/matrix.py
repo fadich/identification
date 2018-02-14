@@ -4,7 +4,10 @@ import abc
 
 
 class Matrix(object):
-    def __init__(self, array=[[],]):
+    def __init__(self, array=None):
+        if array == None:
+            array = [[]]
+
         self._validate(array)
         self._matrix = np.array(array)
 
